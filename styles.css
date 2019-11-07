@@ -1,0 +1,13 @@
+.menteesplus .menteecourse {
+    border-radius: 2px;
+    margin: 2px;
+    max-width: 200px;
+    overflow: hidden;
+    padding: 2px 5px;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
+}
+.menteesplus .menteecourse a {
+    color: white;
+}
