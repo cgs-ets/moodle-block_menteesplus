@@ -96,6 +96,16 @@ class block_menteesplus extends block_base {
         $params = ['mentorid' => $USER->id, 'contextlevel' => CONTEXT_USER];
         if ($users = $DB->get_records_sql($sql, $params)) {
 
+            // Sort the users by first name.
+            usort($users, function($student1, $student2) {
+                if ($student1->firstname > $student2->firstname) {
+                    return 1;
+                } else if ($student1->firstname < $student2->firstname) {
+                    return -1;
+                }
+                return 0;
+            });
+
             // Display list of mentees.
             $this->content->text = html_writer::start_tag('div', ['class' => 'menteesplus']);
             foreach ($users as $user) {
