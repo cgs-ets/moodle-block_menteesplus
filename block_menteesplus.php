@@ -56,7 +56,7 @@ class block_menteesplus extends block_base {
      */
     public function specialization() {
         if (isset($this->config->title) && trim($this->config->title) != '') {
-            $this->title = s(format_string($this->config->title));
+            $this->title = format_string($this->config->title);
         } else {
             $this->title = get_string('newmenteesblock', 'block_menteesplus');
         }
@@ -116,7 +116,7 @@ class block_menteesplus extends block_base {
                 $this->content->text .= $OUTPUT->user_picture($user, ['size' => 35]);
 
                 // Output the mentee's name.
-                $menteename = s(format_string(fullname($user)));
+                $menteename = format_string(fullname($user));
                 $namelink = html_writer::link($CFG->wwwroot.'/user/view.php?id='.$user->id.'&course='.SITEID, $menteename);
                 $this->content->text .= $namelink;
                 $this->content->text .= ' ';
@@ -132,7 +132,7 @@ class block_menteesplus extends block_base {
 
                 // Output the mentee's courses.
                 foreach ($currentcourses as $key => $course) {
-                    $coursename = s(format_string($CFG->navshowfullcoursenames ? $course->fullname : $course->shortname));
+                    $coursename = format_string($CFG->navshowfullcoursenames ? $course->fullname : $course->shortname);
                     $courselink = html_writer::link($CFG->wwwroot.'/course/view.php?id='.$course->id, $coursename);
                     $this->content->text .= html_writer::start_tag('span', ['class' => 'menteecourse btn btn-primary']);
                     $this->content->text .= $courselink;
