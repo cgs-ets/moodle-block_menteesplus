@@ -1,3 +1,23 @@
+.menteesplus .mentee {
+    clear: both;
+    margin-bottom: 3px;
+    overflow: hidden;
+}
+
+.menteesplus .menteename {
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 150px;
+}
+
+.menteesplus .menteecourses {
+    display: table;
+    min-width: 400px;
+}
+
 .menteesplus .menteecourse {
     border-radius: 2px;
     margin: 2px;

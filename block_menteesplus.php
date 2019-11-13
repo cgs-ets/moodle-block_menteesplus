@@ -56,7 +56,7 @@ class block_menteesplus extends block_base {
      */
     public function specialization() {
         if (isset($this->config->title) && trim($this->config->title) != '') {
-            $this->title = format_string($this->config->title);
+            $this->title = s(format_string($this->config->title));
         } else {
             $this->title = get_string('newmenteesblock', 'block_menteesplus');
         }
@@ -112,14 +112,18 @@ class block_menteesplus extends block_base {
 
                 // Output the mentee's photo.
                 $this->content->text .= html_writer::start_tag('div', ['class' => 'mentee']);
-                $this->content->text .= $OUTPUT->user_picture($user);
+                $this->content->text .= html_writer::start_tag('div', ['class' => 'menteename']);
+                $this->content->text .= $OUTPUT->user_picture($user, ['size' => 35]);
 
                 // Output the mentee's name.
-                $namelink = html_writer::link($CFG->wwwroot.'/user/view.php?id='.$user->id.'&course='.SITEID, fullname($user));
+                $menteename = s(format_string(fullname($user)));
+                $namelink = html_writer::link($CFG->wwwroot.'/user/view.php?id='.$user->id.'&course='.SITEID, $menteename);
                 $this->content->text .= $namelink;
                 $this->content->text .= ' ';
+                $this->content->text .= html_writer::end_tag('div');
 
                 // Get the mentee's courses.
+                $this->content->text .= html_writer::start_tag('div', ['class' => 'menteecourses']);
                 $usercourses = enrol_get_users_courses($user->id, true, array('enddate'), 'sortorder');
                 $currentcourses = array_filter($usercourses, function($course) {
                     $classify = course_classify_for_timeline($course);
@@ -128,13 +132,14 @@ class block_menteesplus extends block_base {
 
                 // Output the mentee's courses.
                 foreach ($currentcourses as $key => $course) {
-                    $coursename = $CFG->navshowfullcoursenames ? $course->fullname : $course->shortname;
+                    $coursename = s(format_string($CFG->navshowfullcoursenames ? $course->fullname : $course->shortname));
                     $courselink = html_writer::link($CFG->wwwroot.'/course/view.php?id='.$course->id, $coursename);
                     $this->content->text .= html_writer::start_tag('span', ['class' => 'menteecourse btn btn-primary']);
                     $this->content->text .= $courselink;
                     $this->content->text .= html_writer::end_tag('span');
                     $this->content->text .= ' ';
                 }
+                $this->content->text .= html_writer::end_tag('div');
                 $this->content->text .= html_writer::end_tag('div');
             }
             $this->content->text .= html_writer::end_tag('div');
