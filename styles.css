@@ -1,10 +1,13 @@
-.menteesplus .mentee {
+.menteesplus[data-collapse="0"] .mentee {
     clear: both;
     margin-bottom: 3px;
     overflow: hidden;
 }
-
-.menteesplus .menteename {
+.menteesplus[data-collapse="1"] .mentee {
+    display: inline-block;
+    margin-right: 10px;
+}
+.menteesplus[data-collapse="0"] .menteename {
     float: left;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -12,12 +15,20 @@
     white-space: nowrap;
     width: 150px;
 }
-
-.menteesplus .menteecourses {
+.menteesplus[data-collapse="1"] .menteename {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 150px;
+}
+.menteesplus[data-collapse="0"] .menteecourses {
     display: table;
     min-width: 400px;
 }
-
+.menteesplus[data-collapse="1"] .menteecourses {
+    display: none;
+}
 .menteesplus .menteecourse {
     border-radius: 2px;
     margin: 2px;
@@ -30,4 +41,34 @@
 }
 .menteesplus .menteecourse a {
     color: white;
+}
+.menteesplus .menteestoggle {
+    cursor: pointer;
+    height: 1.5rem;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.55rem;
+    width: 1.5rem;
+}
+/* Add the icon for the expanded node state. */
+.jsenabled .menteesplus[data-collapse="0"]::after {
+    content: "\f0d7";
+    cursor: pointer;
+    font-family: FontAwesome;
+    font-size: 1.2rem;
+    pointer-events: none;
+    position: absolute;
+    right: 1.25rem;
+    top: 0.55rem;
+}
+/* Add the icon for the collapsed node state. */
+.jsenabled .menteesplus[data-collapse="1"]::after {
+    content: "\f0da";
+    cursor: pointer;
+    font-family: FontAwesome;
+    font-size: 1.2rem;
+    pointer-events: none;
+    position: absolute;
+    right: 1.25rem;
+    top: 0.55rem;
 }

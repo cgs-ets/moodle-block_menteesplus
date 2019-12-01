@@ -27,12 +27,11 @@ defined('MOODLE_INTERNAL') || die();
 class block_menteesplus extends block_base {
 
     /**
-     * Sets the block title
+     * Called when the block object is instantiated.
      *
      * @return void
      */
     public function init() {
-        $this->title = get_string('pluginname', 'block_menteesplus');
     }
 
     /**
@@ -42,10 +41,11 @@ class block_menteesplus extends block_base {
      */
     public function applicable_formats() {
         return array(
-            'course-view'    => true,
-            'site'           => true,
+            'course-view'    => false,
             'mod'            => false,
-            'my'             => false
+            'my'             => false,
+            'user-profile'   => true,
+            'site'           => true,
         );
     }
 
@@ -57,8 +57,6 @@ class block_menteesplus extends block_base {
     public function specialization() {
         if (isset($this->config->title) && trim($this->config->title) != '') {
             $this->title = format_string($this->config->title);
-        } else {
-            $this->title = get_string('newmenteesblock', 'block_menteesplus');
         }
     }
 
@@ -68,7 +66,7 @@ class block_menteesplus extends block_base {
      * @return bool
      */
     public function instance_allow_multiple() {
-        return true;
+        return false;
     }
 
     /**
@@ -77,87 +75,86 @@ class block_menteesplus extends block_base {
      * @return string
      */
     public function get_content() {
-        global $CFG, $USER, $DB, $OUTPUT;
+        global $CFG, $COURSE, $USER, $DB, $OUTPUT;
+
+        require_once($CFG->dirroot.'/user/profile/lib.php');
 
         if ($this->content !== null) {
             return $this->content;
         }
 
         $this->content = new stdClass();
+        $this->content->text = '';
+        $this->content->footer = '';
 
-        // Get mentees for the current user.
-        $userfields = user_picture::fields('u');
-        $sql = "SELECT u.id, $userfields
-                  FROM {role_assignments} ra, {context} c, {user} u
-                 WHERE ra.userid = :mentorid
-                   AND ra.contextid = c.id
-                   AND c.instanceid = u.id
-                   AND c.contextlevel = :contextlevel";
-        $params = ['mentorid' => $USER->id, 'contextlevel' => CONTEXT_USER];
-        if ($users = $DB->get_records_sql($sql, $params)) {
+        if ($COURSE->id == 1) {
 
-            // Sort the users by first name.
-            usort($users, function($student1, $student2) {
-                if ($student1->firstname > $student2->firstname) {
-                    return 1;
-                } else if ($student1->firstname < $student2->firstname) {
-                    return -1;
+            // Get mentees for the current user.
+            $userfields = user_picture::fields('u');
+            $sql = "SELECT u.id, $userfields
+                      FROM {role_assignments} ra, {context} c, {user} u
+                     WHERE ra.userid = :mentorid
+                       AND ra.contextid = c.id
+                       AND c.instanceid = u.id
+                       AND c.contextlevel = :contextlevel";
+            $params = ['mentorid' => $USER->id, 'contextlevel' => CONTEXT_USER];
+            if ($users = $DB->get_records_sql($sql, $params)) {
+
+                // Check if the sort order requires a custom profile field and get it.
+                $sortby = get_config('block_menteesplus', 'sortby') ?: 'firstname';
+                $customfields = array_map(function ($field) {return $field->shortname;}, profile_get_custom_fields());
+                if (in_array($sortby, $customfields)) {
+                    foreach ($users as $id => $user) {
+                        $customefields = profile_user_record($id);
+                        $users[$id]->{$sortby} = $customefields->{$sortby};
+                    }
                 }
-                return 0;
-            });
 
-            // Display list of mentees.
-            $this->content->text = html_writer::start_tag('div', ['class' => 'menteesplus']);
-            foreach ($users as $user) {
-
-                // Output the mentee's photo.
-                $this->content->text .= html_writer::start_tag('div', ['class' => 'mentee']);
-                $this->content->text .= html_writer::start_tag('div', ['class' => 'menteename']);
-                $this->content->text .= $OUTPUT->user_picture($user, ['size' => 35]);
-
-                // Output the mentee's name.
-                $menteename = format_string(fullname($user));
-                $namelink = html_writer::link($CFG->wwwroot.'/user/view.php?id='.$user->id.'&course='.SITEID, $menteename);
-                $this->content->text .= $namelink;
-                $this->content->text .= ' ';
-                $this->content->text .= html_writer::end_tag('div');
-
-                // Get the mentee's courses.
-                $this->content->text .= html_writer::start_tag('div', ['class' => 'menteecourses']);
-                $usercourses = enrol_get_users_courses($user->id, true, array('enddate'), 'sortorder');
-                $currentcourses = array_filter($usercourses, function($course) {
-                    $classify = course_classify_for_timeline($course);
-                    return $classify == COURSE_TIMELINE_INPROGRESS;
+                // Sort the users.
+                usort($users, function($student1, $student2) use ($sortby) {
+                    if ($student1->{$sortby} > $student2->{$sortby}) {
+                        return 1;
+                    } else if ($student1->{$sortby} < $student2->{$sortby}) {
+                        return -1;
+                    }
+                    return 0;
                 });
 
-                // Output the mentee's courses.
-                foreach ($currentcourses as $key => $course) {
-                    $coursename = format_string($CFG->navshowfullcoursenames ? $course->fullname : $course->shortname);
-                    $courselink = html_writer::link($CFG->wwwroot.'/course/view.php?id='.$course->id, $coursename);
-                    $this->content->text .= html_writer::start_tag('span', ['class' => 'menteecourse btn btn-primary']);
-                    $this->content->text .= $courselink;
-                    $this->content->text .= html_writer::end_tag('span');
+                // Display list of mentees.
+                $collapsed = get_user_preferences('block_menteesplus_collapsed', 1, $USER);
+                $this->content->text .= html_writer::start_tag('div', ['class' => 'menteesplus', 'data-collapse' => "$collapsed"]);
+                foreach ($users as $user) {
+
+                    $this->content->text .= html_writer::start_tag('div', ['class' => 'mentee']);
+
+                    // Output the mentee's photo and name.
+                    $this->content->text .= html_writer::start_tag('div', ['class' => 'menteename']);
+                    $this->content->text .= $OUTPUT->user_picture($user, ['size' => 35]);
+                    $menteename = format_string(fullname($user));
+                    $namelink = html_writer::link($CFG->wwwroot.'/user/view.php?id='.$user->id.'&course='.SITEID, $menteename);
+                    $this->content->text .= $namelink;
                     $this->content->text .= ' ';
+                    $this->content->text .= html_writer::end_tag('div');
+
+                    // Output the mentee's courses.
+                    $this->content->text .= $this->mentee_courses($user);
+
+                    $this->content->text .= html_writer::end_tag('div');
                 }
-                $this->content->text .= html_writer::end_tag('div');
+                $this->content->text .= html_writer::tag('div', '', ['class' => 'menteestoggle']);
                 $this->content->text .= html_writer::end_tag('div');
             }
+            $this->page->requires->js_call_amd('block_menteesplus/menteesplus', 'init',
+                ['menteestoggle', 'menteesplus', $USER->id, $collapsed]);
+        }
+        else {
+            // Output the mentee's courses.
+            $this->content->text .= html_writer::start_tag('div', ['class' => 'menteesplus']);
+            $this->content->text .= $this->mentee_courses($user);
             $this->content->text .= html_writer::end_tag('div');
         }
 
-        $this->content->footer = '';
-
         return $this->content;
-    }
-
-    /**
-     * Returns true if the block can be docked.
-     * The menteesplus block can only be docked if it has a non-empty title.
-     *
-     * @return bool
-     */
-    public function instance_can_be_docked() {
-        return parent::instance_can_be_docked() && isset($this->config->title) && !empty($this->config->title);
     }
 
     /**
@@ -174,6 +171,48 @@ class block_menteesplus extends block_base {
             'instance' => $configs,
             'plugin' => new stdClass(),
         ];
+    }
+
+    /**
+     * This block has global settings.
+     *
+     * @return boolean
+     */
+    function has_config() {
+        return true;
+    }
+
+    /**
+     * This block has global settings.
+     *
+     * @param user A user object
+     * @return void
+     */
+    function mentee_courses($user) {
+        global $CFG;
+
+        $content = '';
+
+        // Get the mentee's courses.
+        $content .= html_writer::start_tag('div', ['class' => 'menteecourses']);
+        $usercourses = enrol_get_users_courses($user->id, true, array('enddate'), 'sortorder');
+        $currentcourses = array_filter($usercourses, function($course) {
+            $classify = course_classify_for_timeline($course);
+            return $classify == COURSE_TIMELINE_INPROGRESS;
+        });
+
+        // Output the mentee's courses.
+        foreach ($currentcourses as $key => $course) {
+            $coursename = format_string($CFG->navshowfullcoursenames ? $course->fullname : $course->shortname);
+            $courselink = html_writer::link($CFG->wwwroot.'/course/view.php?id='.$course->id, $coursename);
+            $content .= html_writer::start_tag('span', ['class' => 'menteecourse btn btn-primary']);
+            $content .= $courselink;
+            $content .= html_writer::end_tag('span');
+            $content .= ' ';
+        }
+        $content .= html_writer::end_tag('div');
+
+        return $content;
     }
 }
 

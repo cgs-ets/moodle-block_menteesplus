@@ -15,18 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
+ * Mentees Plus block settings
  *
  * @package    block_menteesplus
  * @copyright  2019 Michael de Raadt michaelderaadt@gmai.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2019120200;
-$plugin->requires  = 2019051100;
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = 'Version for Moodle 2.7 onwards';
-$plugin->component = 'block_menteesplus';
+require_once($CFG->dirroot.'/blocks/completion_progress/lib.php');
 
+if ($ADMIN->fulltree) {
+
+    // Allow sorting of mentees by profile fields, incl. custom profile fields.
+    $sortablefields = [
+        'firstname' => get_string('firstname'),
+        'lastname'  => get_string('lastname'),
+        'email    ' => get_string('email')
+    ];
+    $customfields = profile_get_custom_fields();
+    foreach ($customfields as $key => $field) {
+        $sortablefields[$field->shortname] = $field->name;
+    }
+    $settings->add(new admin_setting_configselect('block_menteesplus/sortby',
+        get_string('sortby', 'block_menteesplus'),
+        '',
+        'firstname',
+        $sortablefields)
+    );
+}
