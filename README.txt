@@ -13,4 +13,3 @@ Once the Completion Progress block is installed, you can use it in a course as f
 4. Add the Mentees Plus block to your page
 5. Move your block into a prominent position
 6. (Optional) Configure the block with a title like "Your students"
-

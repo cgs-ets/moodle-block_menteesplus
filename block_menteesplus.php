@@ -32,6 +32,7 @@ class block_menteesplus extends block_base {
      * @return void
      */
     public function init() {
+        $this->title = get_string('pluginname', 'block_menteesplus');
     }
 
     /**
@@ -57,6 +58,8 @@ class block_menteesplus extends block_base {
     public function specialization() {
         if (isset($this->config->title) && trim($this->config->title) != '') {
             $this->title = format_string($this->config->title);
+        } else {
+            $this->title = '';
         }
     }
 
@@ -98,6 +101,8 @@ class block_menteesplus extends block_base {
                        AND c.instanceid = u.id
                        AND c.contextlevel = :contextlevel";
             $params = ['mentorid' => $USER->id, 'contextlevel' => CONTEXT_USER];
+            $collapsed = get_user_preferences('block_menteesplus_collapsed', 1, $USER);
+
             if ($users = $DB->get_records_sql($sql, $params)) {
 
                 // Check if the sort order requires a custom profile field and get it.
@@ -121,7 +126,6 @@ class block_menteesplus extends block_base {
                 });
 
                 // Display list of mentees.
-                $collapsed = get_user_preferences('block_menteesplus_collapsed', 1, $USER);
                 $this->content->text .= html_writer::start_tag('div', ['class' => 'menteesplus', 'data-collapse' => "$collapsed"]);
                 foreach ($users as $user) {
 
