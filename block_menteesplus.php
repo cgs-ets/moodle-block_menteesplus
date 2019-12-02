@@ -78,7 +78,7 @@ class block_menteesplus extends block_base {
      * @return string
      */
     public function get_content() {
-        global $CFG, $COURSE, $USER, $DB, $OUTPUT;
+        global $CFG, $COURSE, $USER, $DB, $OUTPUT, $SCRIPT, $PAGE;
 
         require_once($CFG->dirroot.'/user/profile/lib.php');
 
@@ -90,7 +90,17 @@ class block_menteesplus extends block_base {
         $this->content->text = '';
         $this->content->footer = '';
 
-        if ($COURSE->id == 1) {
+        // Print single user's courses for profile page.
+        if ($SCRIPT == '/user/profile.php') {
+            $user = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
+
+            // Output just the mentee's courses.
+            $this->content->text .= html_writer::start_tag('div', ['class' => 'menteesplus']);
+            $this->content->text .= $this->mentee_courses($user);
+            $this->content->text .= html_writer::end_tag('div');
+
+        } else if ($SCRIPT == '/' || $SCRIPT == '/index.php') {
+            // Print all mentees.
 
             // Get mentees for the current user.
             $userfields = user_picture::fields('u');
@@ -107,7 +117,9 @@ class block_menteesplus extends block_base {
 
                 // Check if the sort order requires a custom profile field and get it.
                 $sortby = get_config('block_menteesplus', 'sortby') ?: 'firstname';
-                $customfields = array_map(function ($field) {return $field->shortname;}, profile_get_custom_fields());
+                $customfields = array_map(function ($field) {
+                    return $field->shortname;
+                }, profile_get_custom_fields());
                 if (in_array($sortby, $customfields)) {
                     foreach ($users as $id => $user) {
                         $customefields = profile_user_record($id);
@@ -145,17 +157,12 @@ class block_menteesplus extends block_base {
 
                     $this->content->text .= html_writer::end_tag('div');
                 }
-                $this->content->text .= html_writer::tag('div', '', ['class' => 'menteestoggle']);
+                $this->content->text .= html_writer::tag('div', $collapsed ? "&#xf0da;" : "&#xf0d7;", ['class' => 'menteestoggle']);
                 $this->content->text .= html_writer::end_tag('div');
             }
             $this->page->requires->js_call_amd('block_menteesplus/menteesplus', 'init',
                 ['menteestoggle', 'menteesplus', $USER->id, $collapsed]);
-        }
-        else {
-            // Output the mentee's courses.
-            $this->content->text .= html_writer::start_tag('div', ['class' => 'menteesplus']);
-            $this->content->text .= $this->mentee_courses($user);
-            $this->content->text .= html_writer::end_tag('div');
+
         }
 
         return $this->content;
@@ -182,7 +189,7 @@ class block_menteesplus extends block_base {
      *
      * @return boolean
      */
-    function has_config() {
+    public function has_config() {
         return true;
     }
 
@@ -192,7 +199,7 @@ class block_menteesplus extends block_base {
      * @param user A user object
      * @return void
      */
-    function mentee_courses($user) {
+    private function mentee_courses($user) {
         global $CFG;
 
         $content = '';

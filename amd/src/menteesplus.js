@@ -19,7 +19,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notification) {
+define(['jquery', 'core/ajax'], function($, Ajax) {
     "use strict";
 
     /**
@@ -34,8 +34,10 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
             // Toggle expanded/collapsed.
             if (toggle.attr('data-collapse') == 0) {
                 toggle.attr("data-collapse", "1");
+                click.html("&#xf0da;");
             } else if (toggle.attr('data-collapse') == 1) {
                 toggle.attr("data-collapse", "0");
+                click.html("&#xf0d7;");
             }
 
             // Save toggle state as a preference.
@@ -48,10 +50,6 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
             Ajax.call([{
                 methodname: 'core_user_set_user_preferences',
                 args: { preferences: preferences },
-                done: function(response) {},
-                fail: function(reason) {
-                    Notification.exception
-                }
             }]);
 
         });

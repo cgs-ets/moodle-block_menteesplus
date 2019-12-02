@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2019120202;
+$plugin->version   = 2019120203;
 $plugin->requires  = 2019051100;
-$plugin->maturity  = MATURITY_ALPHA;
+$plugin->maturity  = MATURITY_BETA;
 $plugin->release   = 'Version for Moodle 2.7 onwards';
 $plugin->component = 'block_menteesplus';
 
