@@ -24,8 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/blocks/completion_progress/lib.php');
-
 if ($ADMIN->fulltree) {
 
     // Allow sorting of mentees by profile fields, incl. custom profile fields.

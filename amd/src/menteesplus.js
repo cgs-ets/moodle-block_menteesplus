@@ -45,25 +45,20 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 'value': value,
                 'userid': userid
             }];
-            var request = {
+            Ajax.call([{
                 methodname: 'core_user_set_user_preferences',
-                args: {
-                    preferences: preferences
+                args: { preferences: preferences },
+                done: function(response) {},
+                fail: function(reason) {
+                    Notification.exception
                 }
-            };
-            Ajax.call([request])[0].then(function(data) {
-                if (data.saved) {
-                    // alert('saved '+userid+' '+value);
-                }
-                return;
-            }).catch(Notification.exception);
+            }]);
 
         });
     }
 
     return {
         init: function(clickNode, toggleNode, userid, keepExpanded) {
-
             // Search node to be collapsible.
             var click = $('.' + clickNode);
 
