@@ -32,7 +32,9 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2019 Michael de Raadt michaelderaadt@gmai.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements \core_privacy\local\metadata\null_provider {
+class provider implements
+        \core_privacy\local\metadata\null_provider,
+        \core_privacy\local\request\user_preference_provider {
 
     /**
      * Get the language string identifier with the component's language
@@ -42,5 +44,33 @@ class provider implements \core_privacy\local\metadata\null_provider {
      */
     public static function get_reason() : string {
         return 'privacy:metadata';
+    }
+
+    /**
+     * Describe all the places where this plugin stores personal data.
+     *
+     * @param collection $collection Collection of items to add metadata to.
+     * @return collection Collection with our added items.
+     */
+    public static function get_metadata(collection $collection) : collection {
+
+        $collection->add_user_preference('block_menteesplus_collapsed',
+                'privacy:metadata:preference:collapsed');
+
+        return $collection;
+    }
+
+    /**
+     * Export user preferences controlled by this plugin.
+     *
+     * @param int $userid ID of the user we are exporting data form.
+     */
+    public static function export_user_preferences(int $userid) {
+
+        $collapsed = get_user_preferences('block_menteesplus_collapsed', 1, $userid);
+
+        writer::export_user_preference('block_menteesplus',
+                'block_menteesplus_collapsed', transform::yesno($collapsed),
+                get_string('privacy:metadata:preference:collapsed', 'block_menteesplus'));
     }
 }
