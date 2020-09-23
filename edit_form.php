@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
  * Form for editing Mentees Plus block instances.
  *
  * @package    block_menteesplus
- * @copyright  2019 Michael de Raadt michaelderaadt@gmai.com
+ * @copyright  2020 Michael de Raadt, Michael Vangelovski
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_menteesplus_edit_form extends block_edit_form {

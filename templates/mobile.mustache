@@ -1,0 +1,61 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+    @package   block_menteesplus
+    @copyright 2020 Michael Vangelovski
+    @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+{{!
+    @template block_menteesplus/mobile
+
+    Template for mobile app.
+}}
+<div class="menteesplus" [attr.data-menteestoggle]="CONTENT_OTHERDATA.data.menteestoggle">
+    <h5 class="card-title">{{title}}</h5>
+    {{#users.0}}
+        {{#users}}
+            <div class="mentee">
+                <div class="menteename">
+                    <a core-link capture="true" href="{{menteeurl}}">
+                        <img src="{{menteepictureurltok}}" class="userpicture" width="35" height="35" alt="Picture of {{menteename}}" title="Picture of {{menteename}}">
+                    </a>
+                    <a core-link capture="true" href="{{menteeurl}}">{{menteename}}</a>
+                </div>
+                <div class="menteecourses">
+                    {{#courses}}
+                        <span class="menteecourse btn btn-primary">
+                            <a core-link capture="true" href="{{courseurl}}">{{coursename}}</a>
+                        </span>
+                    {{/courses}}
+                </div>
+            </div>
+        {{/users}}
+        <button ion-button (click)="menteestoggle(3)" class="menteestoggle">
+            <span *ngIf="CONTENT_OTHERDATA.data.menteestoggle; else elseBlock">&#xf0d7;</span>
+            <ng-template #elseBlock>&#xf0da;</ng-template>
+        </button>
+    {{/users.0}}
+    {{^users.0}}
+        <h4 class="profile-title">{{profiletitle}}</h4>
+        <div class="menteecourses">
+            {{#courses}}
+                <span class="menteecourse btn btn-primary">
+                    <a core-link capture="true" href="{{courseurl}}">{{coursename}}</a>
+                </span>
+            {{/courses}}
+        </div>
+    {{/users.0}}
+</div>

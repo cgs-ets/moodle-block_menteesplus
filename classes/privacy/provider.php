@@ -54,8 +54,11 @@ class provider implements
      */
     public static function get_metadata(collection $collection) : collection {
 
-        $collection->add_user_preference('block_menteesplus_collapsed',
+        $collection->add_user_preference('block_menteesplus_blocktoggle',
                 'privacy:metadata:preference:collapsed');
+       
+        $collection ->add_user_preference('block_menteesplus_menteestoggle',
+                'privacy:metadata:preference:visible');
 
         return $collection;
     }
@@ -67,10 +70,14 @@ class provider implements
      */
     public static function export_user_preferences(int $userid) {
 
-        $collapsed = get_user_preferences('block_menteesplus_collapsed', 1, $userid);
+        $blocktoggle = get_user_preferences('block_menteesplus_blocktoggle', 1, $userid);
+        $menteestoggle = get_user_preferences('block_menteesplus_menteestoggle', 0, $userid);
 
-        writer::export_user_preference('block_menteesplus',
-                'block_menteesplus_collapsed', transform::yesno($collapsed),
-                get_string('privacy:metadata:preference:collapsed', 'block_menteesplus'));
+        writer::export_user_preference('block_menteesplus', 'block_menteesplus_blocktoggle', 
+                transform::yesno($blocktoggle), get_string('privacy:metadata:preference:collapsed', 'block_menteesplus'));
+        
+        writter::export_user_preference('block_menteesplus', 'block_menteesplus_menteestoggle',
+                $menteestoggle, get_string('privacy:metadata:preference:visible', 'block_menteesplus'));        
+       
     }
 }

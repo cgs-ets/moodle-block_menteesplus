@@ -32,3 +32,4 @@ $string['newmenteesblock'] = '(new Mentees Plus block)';
 $string['pluginname'] = 'Mentees Plus';
 $string['privacy:metadata'] = 'The Mentees Plus block only shows data stored in other locations.';
 $string['sortby'] = 'The order in which multiple mentees will be sorted.';
+$string['profiletitle'] = 'Involvement';

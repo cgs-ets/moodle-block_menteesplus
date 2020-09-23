@@ -1,16 +1,17 @@
-.menteesplus .blocktoggle {
-    cursor: pointer;
-    font-family: FontAwesome;
-    position: absolute;
-    top: 0.55rem; 
-    right: 3.2rem;
+.menteesplus {
+    margin: 0 7px;
+    position: relative;
+    margin-bottom: 25px;
+}
+.menteesplus a {
+    text-decoration: none;
 }
 .menteesplus .menteestoggle  {
     cursor: pointer;
     font-family: FontAwesome;
     position: absolute;
-    right: 1.25rem;
-    top: 0.55rem;
+    right: 0;
+    top: 0;
 }
 .menteesplus[data-menteestoggle="0"] .mentee {
     display: inline-block;
@@ -23,19 +24,19 @@
 }
 .menteesplus .menteename {
     overflow: hidden;
-    text-overflow: ellipsis;
     vertical-align: top;
-    white-space: nowrap;
-    width: 150px;
 }
 .menteesplus[data-menteestoggle="1"] .menteename {
     float: left;
+    min-width: 150px;
+    padding-right: 10px;
 }
 .menteesplus .menteecourses {
     display: none;
 }
 .menteesplus[data-menteestoggle="1"] .menteecourses {
     display: table;
+    min-width: 400px;
 }
 .menteesplus .menteecourse {
     border-radius: 2px;
@@ -46,18 +47,26 @@
     text-overflow: ellipsis;
     vertical-align: top;
     white-space: nowrap;
+    /* btn-primary */
+    color: #fff;
+    background-color: #005b94;
+    border-color: #005b94;
+    /* btn */
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    user-select: none;
+    border: 1px solid transparent;
+    font-size: 13px;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 .menteesplus .menteecourse a {
     color: white;
 }
-.menteesplus[data-blocktoggle="0"] .mentee {
-    display: none;
-}
-.block_menteesplus .card-title {
-    display: none; 
-}
-.block_menteesplus .card-title.show-title {
-    display: block;  
+.menteesplus .menteename .userpicture {
+    margin-right: .5rem;
+    border-radius: 50%;
+    vertical-align: middle;
 }
 .block_menteesplus .profile-title {
     font-weight: 400;

@@ -18,13 +18,13 @@
  * Version details
  *
  * @package    block_menteesplus
- * @copyright  2019 Michael de Raadt michaelderaadt@gmai.com
+ * @copyright  2020 Michael de Raadt, Michael Vangelovski
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2019120203;
+$plugin->version   = 2020092202;
 $plugin->requires  = 2019051100;
 $plugin->maturity  = MATURITY_BETA;
 $plugin->release   = 'Version for Moodle 2.7 onwards';
