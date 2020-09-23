@@ -36,7 +36,6 @@
 }
 .menteesplus[data-menteestoggle="1"] .menteecourses {
     display: table;
-    min-width: 400px;
 }
 .menteesplus .menteecourse {
     border-radius: 2px;
