@@ -31,8 +31,8 @@ $addons = array(
                     'class' => 'block_menteesplus'
                 ),
                 'styles' => [
-                    'url' => $CFG->wwwroot . '/blocks/menteesplus/mobileapp.css?v=2020092302',
-                    'version' => 2020092302
+                    'url' => $CFG->wwwroot . '/blocks/menteesplus/mobileapp.css?v=2020092303',
+                    'version' => 2020092303
                 ],
                 'delegate' => 'CoreBlockDelegate', // Delegate (where to display the link to the add-on)
                 'method' => 'mobile_course_view', // Main function in \block_menteesplus\output\mobile
