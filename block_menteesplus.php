@@ -25,7 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/menteesplus/lib.php');
-require_once($CFG->dirroot.'/user/profile/lib.php');
 
 class block_menteesplus extends block_base {
 
