@@ -34,6 +34,9 @@
 .menteesplus .menteecourses {
     display: none;
 }
+.menteesplus.on-profile .menteecourses {
+    display: block;
+}
 .menteesplus[data-menteestoggle="1"] .menteecourses {
     display: table;
 }

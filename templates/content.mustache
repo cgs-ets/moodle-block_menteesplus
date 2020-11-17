@@ -24,7 +24,7 @@
     Mentees plus block content template.
 }}
 
-<div class="menteesplus" data-blocktoggle="{{blocktoggle}}" data-menteestoggle="{{menteestoggle}}">
+<div class="menteesplus {{^users.0}}on-profile{{/users.0}}" data-blocktoggle="{{blocktoggle}}" data-menteestoggle="{{menteestoggle}}">
     {{#users.0}}
         {{>block_menteesplus/mentees}}
         <div class="blocktoggle">{{#blocktoggle}} &#xf06e; {{/blocktoggle}}{{^blocktoggle}} &#xf070; {{/blocktoggle}}</div>
