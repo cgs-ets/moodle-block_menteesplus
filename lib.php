@@ -122,7 +122,7 @@ function block_menteesplus_init($instanceid) {
         }
 
         $data['blocktoggle'] = (int) get_user_preferences('block_menteesplus_blocktoggle', 1, $USER);            
-        $data['menteestoggle'] = (int) get_user_preferences('block_menteesplus_menteestoggle', 0, $USER);
+        $data['menteestoggle'] = (int) get_user_preferences('block_menteesplus_menteestoggle', 1, $USER);
         // Get block instance data
         $blockrecord = $DB->get_record('block_instances', array('id' => $instanceid), '*');
         $config = unserialize(base64_decode($blockrecord->configdata));
