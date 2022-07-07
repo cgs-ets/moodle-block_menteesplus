@@ -45,9 +45,11 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
             if (region.attr('data-menteestoggle') == 1) {
                 region.attr("data-menteestoggle", "0");
                 btnmenteestoggle.html("&#xf0da;");
+                $('.menteestoggle').prop('title', 'Expand');
             } else if (region.attr('data-menteestoggle') == 0) {
                 region.attr("data-menteestoggle", "1");
                 btnmenteestoggle.html("&#xf0d7;");
+                $('.menteestoggle').prop('title', 'Collapse');
             }
 
             // Save toggle state as a preference.
@@ -76,11 +78,13 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
             if (region.attr('data-blocktoggle') == 0) { // Closed
                 region.attr("data-blocktoggle", "1");
                 btnblocktoggle.html("&#xf06e;");
+                $(".blocktoggle").prop('title', 'Show');
                 $('section.block_menteesplus').find(".card-title").removeClass('show-title');
             } else if (region.attr('data-blocktoggle') == 1) { // Opened.
                 region.attr("data-blocktoggle", "0");
                 $('section.block_menteesplus').find(".card-title").addClass('show-title');
                 btnblocktoggle.html("&#xf070;");
+                $(".blocktoggle").prop('title', 'Hide');
             }
 
             // Save toggle state as a preference.

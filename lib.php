@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot.'/user/profile/lib.php');
+require_once($CFG->dirroot . '/user/lib.php');
 
 /**
  * Callback to define user preferences.
@@ -74,7 +75,7 @@ function block_menteesplus_init($instanceid) {
         'users' => array(),
         'courses' => array(),
     );
-
+  
     // Print single user's courses for profile page.
     if ( $PAGE->url->get_path() == '/user/profile.php' ) {
         $user = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
@@ -83,8 +84,11 @@ function block_menteesplus_init($instanceid) {
         $data['courses'] = block_menteesplus_menteecourses($user);
     } else {
         // Get mentees for the current user.
-        $userfields = user_picture::fields('u');
-        $sql = "SELECT u.id, $userfields
+        $context = \context_system::instance();
+        $userfields = (\core_user\fields::for_name()->with_identity($context))->get_sql('u');
+        $userfields = $userfields->selects;
+
+        $sql = "SELECT u.id $userfields
                   FROM {role_assignments} ra, {context} c, {user} u
                  WHERE ra.userid = :mentorid
                    AND ra.contextid = c.id
@@ -122,7 +126,9 @@ function block_menteesplus_init($instanceid) {
         }
 
         $data['blocktoggle'] = (int) get_user_preferences('block_menteesplus_blocktoggle', 1, $USER);            
-        $data['menteestoggle'] = (int) get_user_preferences('block_menteesplus_menteestoggle', 1, $USER);
+        $data['menteestoggle'] = (int) get_user_preferences('block_menteesplus_menteestoggle', 0, $USER);
+        $data['blocktogletitle'] = $data['blocktoggle'] == 1 ? 'Hide' : 'Show';
+        $data['menteestoggletitle'] = $data['blocktoggle'] == 1 ? 'Collapse' : 'Expand';
         // Get block instance data
         $blockrecord = $DB->get_record('block_instances', array('id' => $instanceid), '*');
         $config = unserialize(base64_decode($blockrecord->configdata));
