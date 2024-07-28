@@ -44,11 +44,11 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
             // Toggle expanded/collapsed.
             if (region.attr('data-menteestoggle') == 1) {
                 region.attr("data-menteestoggle", "0");
-                btnmenteestoggle.html("&#xf0da;");
+                btnmenteestoggle.html("<i class='fa fa-caret-right' aria-hidden='true'></i>");
                 $('.menteestoggle').prop('title', 'Expand');
             } else if (region.attr('data-menteestoggle') == 0) {
                 region.attr("data-menteestoggle", "1");
-                btnmenteestoggle.html("&#xf0d7;");
+                btnmenteestoggle.html("<i class='fa fa-caret-down' aria-hidden='true'></i>");
                 $('.menteestoggle').prop('title', 'Collapse');
             }
 
@@ -61,7 +61,7 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
             }];
             Ajax.call([{
                 methodname: 'core_user_set_user_preferences',
-                args: {preferences: preferences},
+                args: { preferences: preferences },
                 done: function (response) {
                     console.log(response);
                 }
@@ -77,13 +77,13 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
             // Toggle show/hide mentees.
             if (region.attr('data-blocktoggle') == 0) { // Closed
                 region.attr("data-blocktoggle", "1");
-                btnblocktoggle.html("&#xf06e;");
+                btnblocktoggle.html("<i class='fa fa-eye' aria-hidden='true'></i> ");
                 $(".blocktoggle").prop('title', 'Show');
                 $('section.block_menteesplus').find(".card-title").removeClass('show-title');
             } else if (region.attr('data-blocktoggle') == 1) { // Opened.
                 region.attr("data-blocktoggle", "0");
                 $('section.block_menteesplus').find(".card-title").addClass('show-title');
-                btnblocktoggle.html("&#xf070;");
+                btnblocktoggle.html("<i class='fa fa-eye-slash' aria-hidden='true'></i>");
                 $(".blocktoggle").prop('title', 'Hide');
             }
 
@@ -98,7 +98,7 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
 
             Ajax.call([{
                 methodname: 'core_user_set_user_preferences',
-                args: {preferences: preferences},
+                args: { preferences: preferences },
                 done: function (response) {
                     console.log(response);
                 }
