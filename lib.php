@@ -147,6 +147,9 @@ function block_menteesplus_menteesdata($users) {
     // Export user data.
     $usersdata = array();
     foreach ($users as $user) {
+        if(empty($user->username)) {
+            continue;
+        }
         $menteepicture = new \user_picture($user, ['size' => 35]);
         $menteepictureurl = $menteepicture->get_url($PAGE)->out(false);
         $menteepicture->includetoken = $user->id;
