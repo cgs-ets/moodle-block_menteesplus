@@ -85,10 +85,7 @@ function block_menteesplus_init($instanceid) {
     } else {
         // Get mentees for the current user.
         $context = \context_system::instance();
-        $userfields = (\core_user\fields::for_name()->with_identity($context))->get_sql('u');
-        $userfields = $userfields->selects;
-
-        $sql = "SELECT u.id $userfields
+        $sql = "SELECT u.*
                   FROM {role_assignments} ra, {context} c, {user} u
                  WHERE ra.userid = :mentorid
                    AND ra.contextid = c.id
@@ -98,6 +95,7 @@ function block_menteesplus_init($instanceid) {
             'mentorid' => $USER->id, 
             'contextlevel' => CONTEXT_USER
         );
+        
         if ($users = $DB->get_records_sql($sql, $params)) {
             // Check if the sort order requires a custom profile field and get it.
             $sortby = get_config('block_menteesplus', 'sortby') ?: 'firstname';
@@ -150,6 +148,7 @@ function block_menteesplus_menteesdata($users) {
         if(empty($user->username)) {
             continue;
         }
+
         $menteepicture = new \user_picture($user, ['size' => 35]);
         $menteepictureurl = $menteepicture->get_url($PAGE)->out(false);
         $menteepicture->includetoken = $user->id;
